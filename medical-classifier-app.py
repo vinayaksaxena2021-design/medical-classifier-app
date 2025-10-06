@@ -3,22 +3,22 @@ from transformers import pipeline
 import pandas as pd
 st.set_page_config(page_title="AI Symptom Classifier", layout="wide")
 st.title("🩺 AI Symptom Classifier")
-st.markdown("""Welcome! This tool predicts possible medical conditions based on symptoms you describe. \n **How to use:** - Enter your symptoms in plain English (e.g., "cough, fever, and headache") - Separate multiple symptoms using commas or "and" - Examples: - "High fever, coughing, shortness of breath" - "Joint pain, stiffness, and swelling" - "Frequent urination, excessive thirst, fatigue" """)
+st.markdown("""Welcome! This tool predicts possible medical conditions based on symptoms you describe. /n **How to use:** - Enter your symptoms in plain English (e.g., "cough, fever, and headache") - Separate multiple symptoms using commas or "and" - Examples: - "High fever, coughing, shortness of breath" - "Joint pain, stiffness, and swelling" - "Frequent urination, excessive thirst, fatigue" """)
 condition_info = {
-"flu":{"description":"A contagious respiratory illness caused by influenza viruses, causing fever, cough, sore throat, and fatigue.","treatment":"Rest, fluids, antiviral medications if prescribed.","advice":"See a doctor if fever is high or symptoms worsen."},
-"migraine":{"description":"A neurological condition characterized by intense, throbbing headaches, often with nausea or sensitivity to light.","treatment":"Pain relief medications, rest in a quiet dark room, hydration.","advice":"Consult a doctor if migraines are frequent or severe."},
-"diabetes":{"description":"A chronic condition where blood sugar levels are abnormally high due to insulin issues.","treatment":"Blood sugar monitoring, medication or insulin, healthy diet, exercise.","advice":"Always consult a doctor for proper management."},
-"pneumonia":{"description":"Infection that inflames the air sacs in one or both lungs, causing cough, fever, and difficulty breathing.","treatment":"Antibiotics if bacterial, rest, fluids.","advice":"Seek immediate medical attention, especially if breathing is difficult."},
-"hypertension":{"description":"High blood pressure, often with no symptoms but can increase risk of heart disease and stroke.","treatment":"Lifestyle changes, medication if prescribed.","advice":"Consult a doctor for diagnosis and monitoring."},
-"arthritis":{"description":"Inflammation of joints causing pain, stiffness, and swelling, common in older adults.","treatment":"Pain relievers, anti-inflammatory medications, physical therapy.","advice":"See a doctor for proper evaluation and treatment plan."},
-"heart attack":{"description":"A medical emergency where blood flow to the heart is blocked, causing chest pain and other symptoms.","treatment":"Immediate emergency care, medications, possible surgery.","advice":"Call emergency services immediately if suspected."},
-"common cold":{"description":"A viral infection of the upper respiratory tract causing sneezing, runny nose, and mild cough.","treatment":"Rest, fluids, over-the-counter remedies.","advice":"See a doctor if symptoms persist or worsen."},
-"allergies":{"description":"Immune system reactions to substances like pollen, dust, or certain foods, causing sneezing, itching, or rashes.","treatment":"Antihistamines, avoiding triggers.","advice":"Consult a doctor if reactions are severe or frequent."},
-"bronchitis":{"description":"Inflammation of the bronchial tubes, causing coughing, mucus production, and discomfort in the chest.","treatment":"Rest, fluids, possibly antibiotics if bacterial.","advice":"See a doctor if cough persists or breathing is difficult."},
-"asthma":{"description":"A chronic respiratory condition that causes episodes of wheezing, shortness of breath, and coughing.","treatment":"Inhalers, avoiding triggers, medications.","advice":"Consult a doctor for proper management."},
+"Flu":{"description":"A contagious respiratory illness caused by influenza viruses, causing fever, cough, sore throat, and fatigue.","treatment":"Rest, fluids, antiviral medications if prescribed.","advice":"See a doctor if fever is high or symptoms worsen."},
+"Migraine":{"description":"A neurological condition characterized by intense, throbbing headaches, often with nausea or sensitivity to light.","treatment":"Pain relief medications, rest in a quiet dark room, hydration.","advice":"Consult a doctor if migraines are frequent or severe."},
+"Diabetes":{"description":"A chronic condition where blood sugar levels are abnormally high due to insulin issues.","treatment":"Blood sugar monitoring, medication or insulin, healthy diet, exercise.","advice":"Always consult a doctor for proper management."},
+"Pneumonia":{"description":"Infection that inflames the air sacs in one or both lungs, causing cough, fever, and difficulty breathing.","treatment":"Antibiotics if bacterial, rest, fluids.","advice":"Seek immediate medical attention, especially if breathing is difficult."},
+"Hypertension":{"description":"High blood pressure, often with no symptoms but can increase risk of heart disease and stroke.","treatment":"Lifestyle changes, medication if prescribed.","advice":"Consult a doctor for diagnosis and monitoring."},
+"Arthritis":{"description":"Inflammation of joints causing pain, stiffness, and swelling, common in older adults.","treatment":"Pain relievers, anti-inflammatory medications, physical therapy.","advice":"See a doctor for proper evaluation and treatment plan."},
+"Heart Attack":{"description":"A medical emergency where blood flow to the heart is blocked, causing chest pain and other symptoms.","treatment":"Immediate emergency care, medications, possible surgery.","advice":"Call emergency services immediately if suspected."},
+"Common Cold":{"description":"A viral infection of the upper respiratory tract causing sneezing, runny nose, and mild cough.","treatment":"Rest, fluids, over-the-counter remedies.","advice":"See a doctor if symptoms persist or worsen."},
+"Allergies":{"description":"Immune system reactions to substances like pollen, dust, or certain foods, causing sneezing, itching, or rashes.","treatment":"Antihistamines, avoiding triggers.","advice":"Consult a doctor if reactions are severe or frequent."},
+"Bronchitis":{"description":"Inflammation of the bronchial tubes, causing coughing, mucus production, and discomfort in the chest.","treatment":"Rest, fluids, possibly antibiotics if bacterial.","advice":"See a doctor if cough persists or breathing is difficult."},
+"Asthma":{"description":"A chronic respiratory condition that causes episodes of wheezing, shortness of breath, and coughing.","treatment":"Inhalers, avoiding triggers, medications.","advice":"Consult a doctor for proper management."},
 "COVID-19":{"description":"A viral respiratory infection caused by SARS-CoV-2, symptoms include fever, cough, and loss of taste/smell.","treatment":"Rest, fluids, medications for symptoms, isolation.","advice":"Seek medical care if breathing difficulty or severe symptoms occur."},
-"anxiety":{"description":"A mental health condition involving excessive worry, nervousness, and fear.","treatment":"Therapy, stress management techniques, medication if prescribed.","advice":"Consult a mental health professional for proper care."},
-"depression":{"description":"A mood disorder causing persistent sadness, loss of interest, and fatigue.","treatment":"Therapy, support, medication if prescribed.","advice":"See a mental health professional for assessment and treatment."}
+"Anxiety":{"description":"A mental health condition involving excessive worry, nervousness, and fear.","treatment":"Therapy, stress management techniques, medication if prescribed.","advice":"Consult a mental health professional for proper care."},
+"Depression":{"description":"A mood disorder causing persistent sadness, loss of interest, and fatigue.","treatment":"Therapy, support, medication if prescribed.","advice":"See a mental health professional for assessment and treatment."}
 }
 classifier = pipeline("zero-shot-classification", model="valhalla/distilbart-mnli-12-1")
 symptom = st.text_area("Describe your symptoms here:")
@@ -42,3 +42,4 @@ if st.button("Predict Condition"):
             df.index = df.index+1
             st.markdown("### Top 3 Predictions")
             st.table(df)
+
