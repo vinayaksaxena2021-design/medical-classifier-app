@@ -3,7 +3,12 @@ from transformers import pipeline
 import pandas as pd
 st.set_page_config(page_title="AI Symptom Classifier", layout="wide")
 st.title("🩺 AI Symptom Classifier")
-st.markdown("""Welcome! This tool predicts possible medical conditions based on symptoms you describe. /n **How to use:** - Enter your symptoms in plain English (e.g., "cough, fever, and headache") - Separate multiple symptoms using commas or "and" - Examples: - "High fever, coughing, shortness of breath" - "Joint pain, stiffness, and swelling" - "Frequent urination, excessive thirst, fatigue" """)
+st.markdown("""Welcome! This tool predicts possible medical conditions based on symptoms you describe.
+**How to use:**
+- Enter your symptoms in plain English (e.g., "cough, fever, and headache")
+- Separate multiple symptoms using commas or "and" - Examples: - "High fever, coughing, shortness of breath" 
+- "Joint pain, stiffness, and swelling" - "Frequent urination, excessive thirst, fatigue" 
+""")
 condition_info = {
 "Flu":{"description":"A contagious respiratory illness caused by influenza viruses, causing fever, cough, sore throat, and fatigue.","treatment":"Rest, fluids, antiviral medications if prescribed.","advice":"See a doctor if fever is high or symptoms worsen."},
 "Migraine":{"description":"A neurological condition characterized by intense, throbbing headaches, often with nausea or sensitivity to light.","treatment":"Pain relief medications, rest in a quiet dark room, hydration.","advice":"Consult a doctor if migraines are frequent or severe."},
@@ -42,4 +47,5 @@ if st.button("Predict Condition"):
             df.index = df.index+1
             st.markdown("### Top 3 Predictions")
             st.table(df)
+
 
