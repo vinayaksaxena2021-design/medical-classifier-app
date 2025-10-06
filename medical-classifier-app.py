@@ -6,8 +6,10 @@ st.title("🩺 AI Symptom Classifier")
 st.markdown("""Welcome! This tool predicts possible medical conditions based on symptoms you describe.
 **How to use:**
 - Enter your symptoms in plain English (e.g., "cough, fever, and headache")
-- Separate multiple symptoms using commas or "and" - Examples: - "High fever, coughing, shortness of breath" 
-- "Joint pain, stiffness, and swelling" - "Frequent urination, excessive thirst, fatigue" 
+- Separate multiple symptoms using commas or "and" 
+- Examples: - "High fever, coughing, shortness of breath" 
+- "Joint pain, stiffness, and swelling" 
+- "Frequent urination, excessive thirst, fatigue" 
 """)
 condition_info = {
 "Flu":{"description":"A contagious respiratory illness caused by influenza viruses, causing fever, cough, sore throat, and fatigue.","treatment":"Rest, fluids, antiviral medications if prescribed.","advice":"See a doctor if fever is high or symptoms worsen."},
@@ -47,5 +49,6 @@ if st.button("Predict Condition"):
             df.index = df.index+1
             st.markdown("### Top 3 Predictions")
             st.table(df)
+
 
 
