@@ -3,11 +3,8 @@ from transformers import pipeline
 import pandas as pd
 st.set_page_config(page_title="AI Symptom Classifier", layout="wide")
 st.title("🩺 AI Symptom Classifier")
-st.markdown("""Welcome! This tool predicts possible medical conditions based on symptoms you describe.
-**How to use:**
-- Enter your symptoms in plain English (e.g., "cough, fever, and headache")
-- Separate multiple symptoms using commas or "and" 
-""")
+st.markdown("""Welcome! Select your symptoms and indicate their severity to get predicted medical conditions.""")
+#Conditions that the app can "diagnose"
 condition_info = {
 "Flu":{"description":"A contagious respiratory illness caused by influenza viruses, causing fever, cough, sore throat, and fatigue.","treatment":"Rest, fluids, antiviral medications if prescribed.","advice":"See a doctor if fever is high or symptoms worsen."},
 "Migraine":{"description":"A neurological condition characterized by intense, throbbing headaches, often with nausea or sensitivity to light.","treatment":"Pain relief medications, rest in a quiet dark room, hydration.","advice":"Consult a doctor if migraines are frequent or severe."},
@@ -24,25 +21,51 @@ condition_info = {
 "Anxiety":{"description":"A mental health condition involving excessive worry, nervousness, and fear.","treatment":"Therapy, stress management techniques, medication if prescribed.","advice":"Consult a mental health professional for proper care."},
 "Depression":{"description":"A mood disorder causing persistent sadness, loss of interest, and fatigue.","treatment":"Therapy, support, medication if prescribed.","advice":"See a mental health professional for assessment and treatment."}
 }
-classifier = pipeline("zero-shot-classification", model="valhalla/distilbart-mnli-12-1")
-symptom = st.text_area("Describe your symptoms here:")
+#Mapping the potential symptoms to conditions
+symptom_map = {
+"cough":["flu","pneumonia","bronchitis","common cold","COVID-19","asthma"],
+"fever":["flu","pneumonia","COVID-19"],
+"headache":["migraine","flu","COVID-19"],
+"fatigue":["flu","diabetes","depression","COVID-19"],
+"joint pain":["arthritis","flu"],
+"shortness of breath":["asthma","pneumonia","heart attack","COVID-19"],
+"sneezing":["common cold","allergies"],
+"nausea":["migraine","flu","COVID-19"],
+"chest pain":["heart attack","pneumonia","bronchitis"]
+}
+#Creates a checkbox for conditions along with a severity slider to assign weights to the selected symptoms
+st.markdown("### Select your symptoms and their severity")
+selected_symptoms = []
+severity_scores = []
+for symptom in symptom_map.keys():
+    checked = st.checkbox(symptom)
+    if checked:
+        severity = st.slider(f"Severity of {symptom}", 1, 5, 3)
+        selected_symptoms.append(symptom)
+        severity_scores.append(severity)
+#Running the selected symptoms through the LLM to generate confidence probabilites for each condition
 if st.button("Predict Condition"):
-    if symptom.strip()=="":
-        st.warning("Please enter your symptoms first.")
+    if not selected_symptoms:
+        st.warning("Please select at least one symptom.")
     else:
-        with st.spinner("Analyzing symptoms..."):
-            result = classifier(symptom, list(condition_info.keys()))
-            top_label = result["labels"][0]
-            confidence = round(result["scores"][0]*100,2)
-            info = condition_info.get(top_label,{"description":"No description available","treatment":"No treatment information available","advice":"Consult a doctor"})
-            st.success(f"**Top Predicted Condition:** {top_label} ({confidence}% confidence)")
-            st.markdown(f"**Description:** {info['description']}")
-            st.markdown(f"**Recommended Treatment:** {info['treatment']}")
-            st.markdown(f"**Doctor Advice:** {info['advice']}")
-            df = pd.DataFrame({
-                "Condition": result["labels"][:3],
-                "Confidence (%)": [round(score*100,2) for score in result["scores"][:3]]
-            })
-            df.index = df.index+1
-            st.markdown("### Top 3 Predictions")
-            st.table(df)
+        candidate_conditions = {}
+        for symptom, severity in zip(selected_symptoms, severity_scores):
+            for condition in symptom_map[symptom]:
+                candidate_conditions[condition] = candidate_conditions.get(condition,0) + severity
+        sorted_conditions = sorted(candidate_conditions.items(), key=lambda x: x[1], reverse=True)
+        top_label = sorted_conditions[0][0]
+        confidence = round(sorted_conditions[0][1]/sum(severity_scores)*100,2)
+        info = condition_info.get(top_label,{"description":"No description available","treatment":"No treatment information available","advice":"Consult a doctor"})
+        st.success(f"**Top Predicted Condition:** {top_label} ({confidence}% confidence)")
+        st.markdown(f"**Description:** {info['description']}")
+        st.markdown(f"**Recommended Treatment:** {info['treatment']}")
+        st.markdown(f"**Doctor Advice:** {info['advice']}")
+        top3 = sorted_conditions[:3]
+        df = pd.DataFrame({
+            "Condition":[c[0] for c in top3],
+            "Score":[c[1] for c in top3]
+        })
+        #Displaying top 3 conditions
+        df.index = df.index+1
+        st.markdown("### Top 3 Predicted Conditions")
+        st.table(df)
